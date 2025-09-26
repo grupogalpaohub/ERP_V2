@@ -29,3 +29,4 @@ export function middleware(req: NextRequest) {
 
 export const config = { matcher: ['/((?!_next|api|favicon|assets|login).*)'] }
 
+
