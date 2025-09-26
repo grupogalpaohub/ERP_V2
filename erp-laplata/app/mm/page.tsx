@@ -1,102 +1,105 @@
 import Link from 'next/link'
-import { getMaterials } from '@/lib/db/materials'
+import { Package, Users, ShoppingCart, BarChart3 } from 'lucide-react'
 
-export default async function MMPage() {
-  // Leitura real do banco (guardrail: UI = DB)
-  const materials = await getMaterials()
-  const materialsCount = materials.length
+export default function MMPage() {
+  const mmModules = [
+    { 
+      href: '/mm/materials', 
+      icon: Package, 
+      title: 'Materiais', 
+      description: 'Catálogo de materiais e produtos',
+      count: 0
+    },
+    { 
+      href: '/mm/suppliers', 
+      icon: Users, 
+      title: 'Fornecedores', 
+      description: 'Gestão de fornecedores',
+      count: 0
+    },
+    { 
+      href: '/mm/purchase-orders', 
+      icon: ShoppingCart, 
+      title: 'Pedidos de Compra', 
+      description: 'Criação e acompanhamento de POs',
+      count: 0
+    },
+    { 
+      href: '/mm/reports', 
+      icon: BarChart3, 
+      title: 'Relatórios', 
+      description: 'Relatórios de compras e fornecedores',
+      count: 0
+    },
+  ]
 
   return (
-    <div className="space-y-6">
-      <div className="bg-[#1a1a1a] rounded-xl p-6 border border-[#333]">
-        <h1 className="text-2xl font-bold text-white mb-2">MM - Materiais & Compras</h1>
-        <p className="text-gray-400">Gestão de materiais, fornecedores e pedidos de compra</p>
+    <div className="p-6">
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-white mb-2">MM - Materiais & Compras</h1>
+        <p className="text-gray-400">Gestão completa de materiais, fornecedores e pedidos de compra</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-[#1a1a1a] rounded-xl p-6 border border-[#333]">
+      {/* Cards de Resumo */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div className="bg-gray-800 p-6 rounded-lg border border-gray-700">
           <h3 className="text-lg font-semibold text-white mb-2">Materiais Ativos</h3>
-          <p className="text-2xl font-bold text-[#0070f3]">{materialsCount}</p>
+          <p className="text-3xl font-bold text-blue-400">0</p>
           <p className="text-sm text-gray-400">Total de materiais</p>
         </div>
         
-        <div className="bg-[#1a1a1a] rounded-xl p-6 border border-[#333]">
+        <div className="bg-gray-800 p-6 rounded-lg border border-gray-700">
           <h3 className="text-lg font-semibold text-white mb-2">Fornecedores</h3>
-          <p className="text-2xl font-bold text-green-400">-</p>
-          <p className="text-sm text-gray-400">Em breve</p>
+          <p className="text-3xl font-bold text-green-400">0</p>
+          <p className="text-sm text-gray-400">Cadastrados</p>
         </div>
         
-        <div className="bg-[#1a1a1a] rounded-xl p-6 border border-[#333]">
+        <div className="bg-gray-800 p-6 rounded-lg border border-gray-700">
           <h3 className="text-lg font-semibold text-white mb-2">POs Abertos</h3>
-          <p className="text-2xl font-bold text-yellow-400">-</p>
-          <p className="text-sm text-gray-400">Em breve</p>
+          <p className="text-3xl font-bold text-yellow-400">0</p>
+          <p className="text-sm text-gray-400">Pendentes</p>
+        </div>
+        
+        <div className="bg-gray-800 p-6 rounded-lg border border-gray-700">
+          <h3 className="text-lg font-semibold text-white mb-2">Valor em Compras</h3>
+          <p className="text-3xl font-bold text-purple-400">R$ 0,00</p>
+          <p className="text-sm text-gray-400">Este mês</p>
         </div>
       </div>
 
-      <div className="bg-[#1a1a1a] rounded-xl p-6 border border-[#333]">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-semibold text-white">Catálogo de Materiais</h2>
-          <Link 
-            href="/mm/materials/new"
-            className="bg-[#0070f3] hover:bg-[#0051a2] text-white px-4 py-2 rounded-lg transition-colors"
-          >
-            Novo Material
-          </Link>
-        </div>
-        
-        {materials.length === 0 ? (
-          <div className="text-center py-8">
-            <p className="text-gray-400 mb-4">Nenhum material cadastrado</p>
-            <Link 
-              href="/mm/materials/new"
-              className="text-[#0070f3] hover:text-[#0051a2] transition-colors"
+      {/* Módulos do MM */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {mmModules.map((module) => {
+          const Icon = module.icon
+          return (
+            <Link
+              key={module.href}
+              href={module.href}
+              className="bg-gray-800 p-6 rounded-lg border border-gray-700 hover:border-blue-500 hover:bg-gray-750 transition-all group"
             >
-              Criar primeiro material
+              <div className="flex items-start gap-4">
+                <div className="p-3 bg-blue-600/20 rounded-lg group-hover:bg-blue-600/30 transition-colors">
+                  <Icon className="w-6 h-6 text-blue-400" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-xl font-semibold text-white mb-2 group-hover:text-blue-400 transition-colors">
+                    {module.title}
+                  </h3>
+                  <p className="text-gray-400 mb-3">{module.description}</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-500">
+                      {module.count} itens
+                    </span>
+                    <span className="text-blue-400 text-sm group-hover:text-blue-300 transition-colors">
+                      Acessar →
+                    </span>
+                  </div>
+                </div>
+              </div>
             </Link>
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-[#333]">
-                  <th className="text-left py-3 px-4 text-white">PN</th>
-                  <th className="text-left py-3 px-4 text-white">Nome</th>
-                  <th className="text-left py-3 px-4 text-white">Tipo</th>
-                  <th className="text-left py-3 px-4 text-white">Unidade</th>
-                  <th className="text-left py-3 px-4 text-white">Status</th>
-                  <th className="text-left py-3 px-4 text-white">Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                {materials.map((material) => (
-                  <tr key={material.pn} className="border-b border-[#333] hover:bg-[#333]/20">
-                    <td className="py-3 px-4 text-white font-mono">{material.pn}</td>
-                    <td className="py-3 px-4 text-white">{material.name_commercial}</td>
-                    <td className="py-3 px-4 text-gray-400">{material.material_type_code}</td>
-                    <td className="py-3 px-4 text-gray-400">{material.uom}</td>
-                    <td className="py-3 px-4">
-                      <span className={`px-2 py-1 rounded text-xs ${
-                        material.is_active 
-                          ? 'bg-green-500/20 text-green-400' 
-                          : 'bg-red-500/20 text-red-400'
-                      }`}>
-                        {material.is_active ? 'Ativo' : 'Inativo'}
-                      </span>
-                    </td>
-                    <td className="py-3 px-4">
-                      <Link 
-                        href={`/mm/materials/${material.pn}`}
-                        className="text-[#0070f3] hover:text-[#0051a2] text-sm"
-                      >
-                        Editar
-                      </Link>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+          )
+        })}
       </div>
     </div>
   )

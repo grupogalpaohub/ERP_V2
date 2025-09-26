@@ -15,6 +15,7 @@ export function middleware(req: NextRequest) {
   const hasSession =
     req.cookies.get('sb-access-token') ||
     req.cookies.get('supabase-auth-token') ||
+    req.cookies.get('sb-refresh-token') ||
     req.headers.get('Authorization')
 
   if (!isPublic && !hasSession) {

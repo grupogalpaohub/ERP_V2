@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Camada base leve (sem override agressivo) */
+:root { color-scheme: dark light; }
+html, body { height: 100%; }
+a { @apply text-blue-400 hover:underline; }
+
+.card { @apply rounded-2xl bg-neutral-900 border border-neutral-800 shadow p-4; }
