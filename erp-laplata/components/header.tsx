@@ -1,51 +1,74 @@
 'use client'
 
-import { Bell, User, Settings, LogOut } from 'lucide-react'
-import { logout } from '@/lib/auth/actions'
+import { useEffect, useState } from 'react'
+import { supabase } from '@/lib/supabase/client'
+import { useRouter } from 'next/navigation'
 
 export function Header() {
-  return (
-    <header className="h-16 bg-[#2d2d2d] border-b border-[#333] flex items-center justify-between px-6">
-      {/* Breadcrumb placeholder */}
-      <div className="flex items-center gap-2 text-sm text-gray-400">
-        <span>ERP LaPlata</span>
-        <span>/</span>
-        <span className="text-white">Dashboard</span>
-      </div>
+  const [user, setUser] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
+  const router = useRouter()
 
-      {/* Right side */}
-      <div className="flex items-center gap-4">
-        {/* Notifications */}
-        <button className="p-2 text-gray-400 hover:text-white transition-colors">
-          <Bell className="w-5 h-5" />
-        </button>
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      setUser(user)
+      setLoading(false)
+    }
 
-        {/* User menu */}
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-[#0070f3] rounded-full flex items-center justify-center">
-            <User className="w-4 h-4 text-white" />
-          </div>
-          <div className="text-sm">
-            <div className="text-white font-medium">Admin</div>
-            <div className="text-gray-400 text-xs">LaPlata Lunaria</div>
-          </div>
+    getUser()
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setUser(session?.user ?? null)
+        setLoading(false)
+      }
+    )
+
+    return () => subscription.unsubscribe()
+  }, [])
+
+  const handleLogout = async () => {
+    await fetch('/api/auth/logout', { method: 'POST' })
+    router.push('/login')
+    router.refresh()
+  }
+
+  if (loading) {
+    return (
+      <header className="bg-gray-800 border-b border-gray-700 px-6 py-4">
+        <div className="flex justify-between items-center">
+          <div className="w-8 h-8 bg-gray-600 rounded-full animate-pulse"></div>
         </div>
+      </header>
+    )
+  }
 
-        {/* Settings */}
-        <button className="p-2 text-gray-400 hover:text-white transition-colors">
-          <Settings className="w-5 h-5" />
-        </button>
-
-        {/* Logout */}
-        <form action={logout}>
-          <button 
-            type="submit"
-            className="p-2 text-gray-400 hover:text-red-400 transition-colors"
-            title="Sair"
+  return (
+    <header className="bg-gray-800 border-b border-gray-700 px-6 py-4">
+      <div className="flex justify-between items-center">
+        <div></div>
+        
+        {user ? (
+          <div className="flex items-center gap-4">
+            <span className="text-gray-300 text-sm">
+              {user.email}
+            </span>
+            <button
+              onClick={handleLogout}
+              className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm transition-colors"
+            >
+              Sair
+            </button>
+          </div>
+        ) : (
+          <a
+            href="/login"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm transition-colors"
           >
-            <LogOut className="w-5 h-5" />
-          </button>
-        </form>
+            Entrar
+          </a>
+        )}
       </div>
     </header>
   )

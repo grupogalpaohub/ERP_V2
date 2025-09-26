@@ -1,5 +1,5 @@
 import { supabase } from '@/lib/supabase/server'
-import { TENANT_ID } from '@/lib/auth/tenant'
+import { FIXED_TENANT_ID as TENANT_ID } from '@/lib/tenant'
 
 export interface Material {
   mm_material_id: number
@@ -15,22 +15,22 @@ export interface Material {
   purchase_link: string | null
 }
 
-export async function getMaterials() {
+export async function getMaterials(tenantId?: string) {
   const supabaseServer = supabase()
   
   const { data, error } = await supabaseServer
     .from('mm_material')
     .select('*')
-    .eq('tenant_id', TENANT_ID)
+    .eq('tenant_id', tenantId || TENANT_ID)
     .eq('is_active', true)
     .order('mm_material_id', { ascending: false })
   
   if (error) {
     console.error('Erro ao buscar materiais:', error)
-    return []
+    return { data: [], error }
   }
   
-  return data as Material[]
+  return { data: data as Material[], error: null }
 }
 
 export async function getMaterialByPN(pn: string) {

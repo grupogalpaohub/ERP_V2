@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { color-scheme: light dark; }
+html, body { height: 100%; }
+a { @apply text-blue-400 hover:underline; }
+.card { @apply rounded-2xl bg-neutral-900 border border-neutral-800 shadow p-4; }
