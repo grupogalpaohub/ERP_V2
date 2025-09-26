@@ -1,9 +1,6 @@
 import './globals.css'
 
-export const metadata = {
-  title: 'LaPlata ERP',
-  description: 'ERP La Plata Lunária',
-}
+export const metadata = { title: 'LaPlata ERP', description: 'ERP La Plata Lunária' }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
