@@ -1,10 +1,9 @@
-import { createClient } from '@supabase/supabase-js'
-import { FIXED_TENANT_ID } from '@/lib/tenant'
+﻿import { supabase } from '@/lib/supabase/server'\r\nimport { FIXED_TENANT_ID } from '@/lib/tenant'
 
 type Opt = { code: string; name: string }
 
 async function fetchOpts(table: string): Promise<Opt[]> {
-  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
+  const supabase = supabase()
   const { data } = await supabase
     .from(table)
     .select('code,name')
@@ -22,25 +21,25 @@ export default async function NewMaterialPage() {
   ])
 
   const typesFallback: Opt[] = types.length ? types : [
-    { code: 'RAW', name: 'Matéria-prima' },
+    { code: 'RAW', name: 'MatÃ©ria-prima' },
     { code: 'COMP', name: 'Componente' },
     { code: 'FIN', name: 'Produto Acabado' },
     { code: 'TOOL', name: 'Ferramenta' },
-    { code: 'CONS', name: 'Consumível' },
+    { code: 'CONS', name: 'ConsumÃ­vel' },
   ]
   const classesFallback: Opt[] = classes.length ? classes : [
     { code: 'METAL', name: 'Metal' },
-    { code: 'PLASTIC', name: 'Plástico' },
-    { code: 'ELECTRONIC', name: 'Eletrônico' },
-    { code: 'MECHANICAL', name: 'Mecânico' },
-    { code: 'CHEMICAL', name: 'Químico' },
+    { code: 'PLASTIC', name: 'PlÃ¡stico' },
+    { code: 'ELECTRONIC', name: 'EletrÃ´nico' },
+    { code: 'MECHANICAL', name: 'MecÃ¢nico' },
+    { code: 'CHEMICAL', name: 'QuÃ­mico' },
   ]
   const uomsFallback: Opt[] = uoms.length ? uoms : [
     { code: 'UN', name: 'Unidade' },
     { code: 'KG', name: 'Quilograma' },
     { code: 'M', name: 'Metro' },
     { code: 'M2', name: 'Metro Quadrado' },
-    { code: 'M3', name: 'Metro Cúbico' },
+    { code: 'M3', name: 'Metro CÃºbico' },
     { code: 'L', name: 'Litro' },
   ]
 
@@ -68,17 +67,17 @@ export default async function NewMaterialPage() {
             />
           </div>
 
-          {/* Descrição */}
+          {/* DescriÃ§Ã£o */}
           <div>
             <label htmlFor="description" className="block text-sm font-medium mb-2">
-              Descrição
+              DescriÃ§Ã£o
             </label>
             <textarea
               id="description"
               name="description"
               rows={3}
               className="w-full px-3 py-2 bg-neutral-800 border border-neutral-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Descrição detalhada do material"
+              placeholder="DescriÃ§Ã£o detalhada do material"
             />
           </div>
 
@@ -187,7 +186,7 @@ export default async function NewMaterialPage() {
           </div>
         </div>
 
-        {/* Botões */}
+        {/* BotÃµes */}
         <div className="flex gap-4 pt-6">
           <button
             type="submit"
@@ -206,3 +205,4 @@ export default async function NewMaterialPage() {
     </div>
   )
 }
+
