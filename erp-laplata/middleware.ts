@@ -25,4 +25,9 @@ export function middleware(req: NextRequest) {
   return NextResponse.next()
 }
 
-export const config = { matcher: ['/((?!_next|api|favicon|assets).*)'] }
+export const config = {
+  matcher: [
+    // protege tudo MENOS estas rotas
+    '/((?!_next|api|favicon|assets|login).*)',
+  ],
+}
