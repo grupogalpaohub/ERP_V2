@@ -1,5 +1,5 @@
 import { supabase } from '@/lib/supabase/server'
-import { TENANT_ID } from '@/lib/auth/tenant'
+import { FIXED_TENANT_ID as TENANT_ID } from '@/lib/tenant'
 
 export interface AuditEvent {
   object_type: string

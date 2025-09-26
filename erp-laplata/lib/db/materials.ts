@@ -1,5 +1,5 @@
 import { supabase } from '@/lib/supabase/server'
-import { TENANT_ID } from '@/lib/auth/tenant'
+import { FIXED_TENANT_ID as TENANT_ID } from '@/lib/tenant'
 
 export interface Material {
   mm_material_id: number

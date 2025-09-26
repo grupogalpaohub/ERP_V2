@@ -1,7 +1,7 @@
 'use server'
 
 import { supabase } from '@/lib/supabase/server'
-import { TENANT_ID } from '@/lib/auth/tenant'
+import { FIXED_TENANT_ID as TENANT_ID } from '@/lib/tenant'
 import { getCurrentUser } from '@/lib/auth/guard'
 import { logChange } from '@/lib/audit/logger'
 
@@ -17,7 +17,7 @@ export async function createMaterial(formData: FormData) {
   const materialClassCode = formData.get('material_class_code') as string
   const uom = formData.get('uom') as string
   const leadTimeDays = parseInt(formData.get('lead_time_days') as string) || 0
-  const vendorId = parseInt(formData.get('vendor_id') as string) || 1
+  const vendorId = formData.get('vendor_id') ? parseInt(formData.get('vendor_id') as string) : null
   const purchaseLink = formData.get('purchase_link') as string
 
   if (!nameCommercial || !materialTypeCode || !materialClassCode || !uom) {

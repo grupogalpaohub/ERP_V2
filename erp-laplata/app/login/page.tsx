@@ -8,8 +8,8 @@ export default function LoginPage() {
   const sp = useSearchParams()
   const next = sp.get('next') || '/'
 
-  const [email, setEmail] = useState('admin@teste.com')
-  const [password, setPassword] = useState('teste123')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [err, setErr] = useState<string | null>(null)
 
