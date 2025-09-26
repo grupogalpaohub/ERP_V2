@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { FIXED_TENANT_ID } from '@/lib/tenant'
+import { notFound } from 'next/navigation'
 
 type Opt = { code: string; name: string }
 
@@ -13,13 +14,33 @@ async function fetchOpts(table: string): Promise<Opt[]> {
   return (data as any) ?? []
 }
 
-export default async function NewMaterialPage() {
-  // tenta DB; se vazio, usa fallback leve (TODO: seed)
-  const [types, classes, uoms] = await Promise.all([
+async function fetchMaterial(pn: string) {
+  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
+  const { data, error } = await supabase
+    .from('mm_material')
+    .select('*')
+    .eq('tenant_id', FIXED_TENANT_ID)
+    .eq('pn', pn)
+    .single()
+  
+  if (error || !data) {
+    return null
+  }
+  
+  return data
+}
+
+export default async function EditMaterialPage({ params }: { params: { pn: string } }) {
+  const [material, types, classes, uoms] = await Promise.all([
+    fetchMaterial(params.pn),
     fetchOpts('mm_material_type'),
     fetchOpts('mm_material_class'),
     fetchOpts('mm_uom'),
   ])
+
+  if (!material) {
+    notFound()
+  }
 
   const typesFallback: Opt[] = types.length ? types : [
     { code: 'RAW', name: 'Matéria-prima' },
@@ -47,11 +68,11 @@ export default async function NewMaterialPage() {
   return (
     <div className="p-6">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold">Novo Material</h1>
-        <p className="text-neutral-400">Cadastre um novo material no sistema</p>
+        <h1 className="text-2xl font-bold">Editar Material</h1>
+        <p className="text-neutral-400">PN: {material.pn}</p>
       </div>
 
-      <form action="/api/mm/materials/actions" method="POST" className="space-y-6">
+      <form action={`/api/mm/materials/actions?action=update&pn=${material.pn}`} method="POST" className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Nome Comercial */}
           <div>
@@ -63,6 +84,7 @@ export default async function NewMaterialPage() {
               id="name_commercial"
               name="name_commercial"
               required
+              defaultValue={material.name_commercial}
               className="w-full px-3 py-2 bg-neutral-800 border border-neutral-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Ex: Brinco Argola Cravejado"
             />
@@ -77,6 +99,7 @@ export default async function NewMaterialPage() {
               id="description"
               name="description"
               rows={3}
+              defaultValue={material.description || ''}
               className="w-full px-3 py-2 bg-neutral-800 border border-neutral-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Descrição detalhada do material"
             />
@@ -91,6 +114,7 @@ export default async function NewMaterialPage() {
               id="material_type_code"
               name="material_type_code"
               required
+              defaultValue={material.material_type_code}
               className="w-full px-3 py-2 bg-neutral-800 border border-neutral-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="">Selecione o tipo</option>
@@ -111,6 +135,7 @@ export default async function NewMaterialPage() {
               id="material_class_code"
               name="material_class_code"
               required
+              defaultValue={material.material_class_code}
               className="w-full px-3 py-2 bg-neutral-800 border border-neutral-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="">Selecione a classe</option>
@@ -131,6 +156,7 @@ export default async function NewMaterialPage() {
               id="uom"
               name="uom"
               required
+              defaultValue={material.uom}
               className="w-full px-3 py-2 bg-neutral-800 border border-neutral-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="">Selecione a unidade</option>
@@ -152,7 +178,7 @@ export default async function NewMaterialPage() {
               id="lead_time_days"
               name="lead_time_days"
               min="0"
-              defaultValue="0"
+              defaultValue={material.lead_time_days}
               className="w-full px-3 py-2 bg-neutral-800 border border-neutral-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
@@ -167,6 +193,7 @@ export default async function NewMaterialPage() {
               id="vendor_id"
               name="vendor_id"
               min="1"
+              defaultValue={material.vendor_id || ''}
               className="w-full px-3 py-2 bg-neutral-800 border border-neutral-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="ID do fornecedor"
             />
@@ -181,6 +208,7 @@ export default async function NewMaterialPage() {
               type="url"
               id="purchase_link"
               name="purchase_link"
+              defaultValue={material.purchase_link || ''}
               className="w-full px-3 py-2 bg-neutral-800 border border-neutral-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="https://exemplo.com/produto"
             />
@@ -193,10 +221,10 @@ export default async function NewMaterialPage() {
             type="submit"
             className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors"
           >
-            Criar Material
+            Salvar Alterações
           </button>
           <a
-            href="/mm/materials"
+            href={`/mm/materials/${material.pn}`}
             className="px-6 py-2 bg-neutral-600 hover:bg-neutral-700 text-white rounded-md transition-colors"
           >
             Cancelar
