@@ -2,14 +2,17 @@ import { supabase } from '@/lib/supabase/server'
 import { TENANT_ID } from '@/lib/auth/tenant'
 
 export interface Material {
+  mm_material_id: number
   pn: string
-  name: string
+  name_commercial: string
   description: string | null
-  type_code: string
-  unit: string
+  material_type_code: string
+  material_class_code: string
+  uom: string
+  lead_time_days: number
   is_active: boolean
-  created_at: string
-  updated_at: string
+  vendor_id: number
+  purchase_link: string | null
 }
 
 export async function getMaterials() {
@@ -20,7 +23,7 @@ export async function getMaterials() {
     .select('*')
     .eq('tenant_id', TENANT_ID)
     .eq('is_active', true)
-    .order('created_at', { ascending: false })
+    .order('mm_material_id', { ascending: false })
   
   if (error) {
     console.error('Erro ao buscar materiais:', error)
@@ -48,13 +51,13 @@ export async function getMaterialByPN(pn: string) {
   return data as Material
 }
 
-export async function getNextPN(typeCode: string) {
+export async function getNextPN(materialTypeCode: string) {
   const supabaseServer = supabase()
   
   const { data, error } = await supabaseServer
     .rpc('mm_next_pn', {
       p_tenant_id: TENANT_ID,
-      p_type_code: typeCode
+      p_material_type_code: materialTypeCode
     })
   
   if (error) {

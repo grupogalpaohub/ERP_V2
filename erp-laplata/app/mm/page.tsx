@@ -71,9 +71,9 @@ export default async function MMPage() {
                 {materials.map((material) => (
                   <tr key={material.pn} className="border-b border-[#333] hover:bg-[#333]/20">
                     <td className="py-3 px-4 text-white font-mono">{material.pn}</td>
-                    <td className="py-3 px-4 text-white">{material.name}</td>
-                    <td className="py-3 px-4 text-gray-400">{material.type_code}</td>
-                    <td className="py-3 px-4 text-gray-400">{material.unit}</td>
+                    <td className="py-3 px-4 text-white">{material.name_commercial}</td>
+                    <td className="py-3 px-4 text-gray-400">{material.material_type_code}</td>
+                    <td className="py-3 px-4 text-gray-400">{material.uom}</td>
                     <td className="py-3 px-4">
                       <span className={`px-2 py-1 rounded text-xs ${
                         material.is_active 

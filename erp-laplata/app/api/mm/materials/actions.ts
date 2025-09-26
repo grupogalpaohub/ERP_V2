@@ -11,12 +11,16 @@ export async function createMaterial(formData: FormData) {
     throw new Error('Usuário não autenticado')
   }
 
-  const name = formData.get('name') as string
+  const nameCommercial = formData.get('name_commercial') as string
   const description = formData.get('description') as string
-  const typeCode = formData.get('type_code') as string
-  const unit = formData.get('unit') as string
+  const materialTypeCode = formData.get('material_type_code') as string
+  const materialClassCode = formData.get('material_class_code') as string
+  const uom = formData.get('uom') as string
+  const leadTimeDays = parseInt(formData.get('lead_time_days') as string) || 0
+  const vendorId = parseInt(formData.get('vendor_id') as string) || 1
+  const purchaseLink = formData.get('purchase_link') as string
 
-  if (!name || !typeCode || !unit) {
+  if (!nameCommercial || !materialTypeCode || !materialClassCode || !uom) {
     throw new Error('Campos obrigatórios não preenchidos')
   }
 
@@ -26,7 +30,7 @@ export async function createMaterial(formData: FormData) {
   const { data: pnData, error: pnError } = await supabaseServer
     .rpc('mm_next_pn', {
       p_tenant_id: TENANT_ID,
-      p_type_code: typeCode
+      p_material_type_code: materialTypeCode
     })
 
   if (pnError || !pnData) {
@@ -41,13 +45,15 @@ export async function createMaterial(formData: FormData) {
     .insert({
       tenant_id: TENANT_ID,
       pn,
-      name,
+      name_commercial: nameCommercial,
       description: description || null,
-      type_code: typeCode,
-      unit,
+      material_type_code: materialTypeCode,
+      material_class_code: materialClassCode,
+      uom,
+      lead_time_days: leadTimeDays,
       is_active: true,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
+      vendor_id: vendorId,
+      purchase_link: purchaseLink || null
     })
     .select()
     .single()
@@ -75,11 +81,13 @@ export async function updateMaterial(pn: string, formData: FormData) {
     throw new Error('Usuário não autenticado')
   }
 
-  const name = formData.get('name') as string
+  const nameCommercial = formData.get('name_commercial') as string
   const description = formData.get('description') as string
-  const unit = formData.get('unit') as string
+  const uom = formData.get('uom') as string
+  const leadTimeDays = parseInt(formData.get('lead_time_days') as string) || 0
+  const purchaseLink = formData.get('purchase_link') as string
 
-  if (!name || !unit) {
+  if (!nameCommercial || !uom) {
     throw new Error('Campos obrigatórios não preenchidos')
   }
 
@@ -97,10 +105,11 @@ export async function updateMaterial(pn: string, formData: FormData) {
   const { data, error } = await supabaseServer
     .from('mm_material')
     .update({
-      name,
+      name_commercial: nameCommercial,
       description: description || null,
-      unit,
-      updated_at: new Date().toISOString()
+      uom,
+      lead_time_days: leadTimeDays,
+      purchase_link: purchaseLink || null
     })
     .eq('tenant_id', TENANT_ID)
     .eq('pn', pn)
@@ -116,9 +125,9 @@ export async function updateMaterial(pn: string, formData: FormData) {
     await logChange({
       object_type: 'mm_material',
       object_id: pn,
-      column_name: 'name',
-      old_value: currentData.name,
-      new_value: name,
+      column_name: 'name_commercial',
+      old_value: currentData.name_commercial,
+      new_value: nameCommercial,
       user_id: user.id
     })
 
@@ -133,13 +142,13 @@ export async function updateMaterial(pn: string, formData: FormData) {
       })
     }
 
-    if (currentData.unit !== unit) {
+    if (currentData.uom !== uom) {
       await logChange({
         object_type: 'mm_material',
         object_id: pn,
-        column_name: 'unit',
-        old_value: currentData.unit,
-        new_value: unit,
+        column_name: 'uom',
+        old_value: currentData.uom,
+        new_value: uom,
         user_id: user.id
       })
     }
