@@ -21,7 +21,15 @@ export async function getMaterials(): Promise<MaterialRow[]> {
 
   const { data, error } = await supabase
     .from('mm_material')
-    .select('pn,description,type_code,class_code,uom_code,is_active,created_at')
+    .select(`
+  pn,
+  description,
+  type_code:material_type_code,
+  class_code:material_class_code,
+  uom_code:uom,
+  is_active,
+  created_at
+`)
     .eq('tenant_id', FIXED_TENANT_ID)
     .order('created_at', { ascending: false })
 
