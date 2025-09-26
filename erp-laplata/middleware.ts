@@ -3,6 +3,7 @@ import type { NextRequest } from 'next/server'
 
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl
+
   const isPublic =
     pathname === '/' ||
     pathname.startsWith('/login') ||
@@ -26,8 +27,5 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    // protege tudo MENOS estas rotas
-    '/((?!_next|api|favicon|assets|login).*)',
-  ],
+  matcher: ['/((?!_next|api|favicon|assets|login).*)'],
 }
