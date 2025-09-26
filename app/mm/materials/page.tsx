@@ -1,4 +1,4 @@
-import { getMaterials } from '@/lib/mm/materials'
+import { getMaterials } from '@/lib/db/materials'
 import Link from 'next/link'
 
 export const dynamic = 'force-dynamic' // garante fetch fresh no dev
@@ -40,9 +40,9 @@ export default async function MaterialsPage() {
                 <tr key={r.pn} className='border-t border-neutral-900 hover:bg-neutral-900/50'>
                   <td className='px-3 py-2 font-mono'>{r.pn}</td>
                   <td className='px-3 py-2'>{r.description ?? '-'}</td>
-                  <td className='px-3 py-2'>{r.type_code ?? '-'}</td>
-                  <td className='px-3 py-2'>{r.class_code ?? '-'}</td>
-                  <td className='px-3 py-2'>{r.uom_code ?? '-'}</td>
+                  <td className='px-3 py-2'>{r.material_type_code ?? '-'}</td>
+                  <td className='px-3 py-2'>{r.material_class_code ?? '-'}</td>
+                  <td className='px-3 py-2'>{r.uom ?? '-'}</td>
                   <td className='px-3 py-2'>{r.is_active ? 'Sim' : 'Não'}</td>
                 </tr>
               ))}
