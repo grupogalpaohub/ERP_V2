@@ -1,4 +1,4 @@
-﻿import { supabase } from './storage'
+import { supabase } from './storage'
 import { FIXED_TENANT_ID } from './tenant'
 
 export async function mirrorSdToFiInvoice(sdInvoiceId: string) {

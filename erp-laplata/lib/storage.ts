@@ -1,4 +1,4 @@
-﻿import { createClient } from '@supabase/supabase-js'
+import { createClient } from '@supabase/supabase-js'
 import { FIXED_TENANT_ID } from './tenant'
 
 export const supabase = createClient(

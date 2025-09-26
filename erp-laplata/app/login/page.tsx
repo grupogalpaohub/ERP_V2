@@ -1,4 +1,4 @@
-ï»¿'use client'
+'use client'
 
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useState } from 'react'
@@ -44,14 +44,14 @@ export default function LoginPage() {
             </svg>
           </div>
           <h1 className="text-3xl font-bold text-white mb-2">LaPlata ERP</h1>
-          <p className="text-gray-400">Sistema Integrado de GestÃ£o</p>
+          <p className="text-gray-400">Sistema Integrado de Gestão</p>
         </div>
 
         {/* Card de Login */}
         <div className="bg-[#1a1a1a]/80 backdrop-blur-sm border border-[#333]/50 rounded-2xl p-8 shadow-2xl">
           <div className="mb-6">
             <h2 className="text-2xl font-semibold text-white mb-2">Bem-vindo de volta</h2>
-            <p className="text-gray-400">FaÃ§a login para acessar sua conta</p>
+            <p className="text-gray-400">Faça login para acessar sua conta</p>
           </div>
 
           <form onSubmit={onSubmit} className="space-y-6">
@@ -95,7 +95,7 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full pl-10 pr-4 py-3 bg-[#0a0a0a] border border-[#333] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#0070f3] focus:ring-2 focus:ring-[#0070f3]/20 transition-all duration-200"
-                  placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
+                  placeholder="••••••••"
                   required
                 />
               </div>
@@ -111,7 +111,7 @@ export default function LoginPage() {
               </div>
             )}
 
-            {/* BotÃ£o de Login */}
+            {/* Botão de Login */}
             <button
               type="submit"
               disabled={loading}
@@ -143,7 +143,7 @@ export default function LoginPage() {
         {/* Footer */}
         <div className="text-center mt-8">
           <p className="text-sm text-gray-500">
-            Â© 2024 LaPlata ERP. Todos os direitos reservados.
+            © 2024 LaPlata ERP. Todos os direitos reservados.
           </p>
         </div>
       </div>
